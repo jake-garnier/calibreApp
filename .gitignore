@@ -1,6 +1,9 @@
 # Calibre-Web data directories
 config/
 books/
+qbittorrent-config/
+readarr-config/
+downloads/
 
 # Credentials
 .credentials
