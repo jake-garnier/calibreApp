@@ -1,0 +1,42 @@
+name: Deploy Calibre-Web to Homelab
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create necessary directories
+        run: |
+          mkdir -p config books
+
+      - name: Stop existing containers
+        run: |
+          docker-compose down || true
+
+      - name: Deploy Calibre-Web
+        run: |
+          docker-compose pull
+          docker-compose up -d --build
+
+      - name: Wait for service to be ready
+        run: |
+          echo "Waiting for Calibre-Web to start..."
+          sleep 30
+
+      - name: Check deployment health
+        run: |
+          curl -f http://localhost:8083 || exit 1
+          echo "Calibre-Web is running successfully!"
+
+      - name: Display container logs
+        if: failure()
+        run: |
+          docker-compose logs --tail=50
