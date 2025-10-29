@@ -47,7 +47,7 @@ services:
       start_period: 40s
 
   readarr:
-    image: lscr.io/linuxserver/readarr:nightly
+    image: ghcr.io/linuxserver/readarr:nightly
     container_name: readarr
     environment:
       - PUID=1000
