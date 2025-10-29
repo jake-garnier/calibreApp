@@ -46,25 +46,27 @@ services:
       retries: 3
       start_period: 40s
 
-  readarr:
-    image: ghcr.io/linuxserver/readarr:nightly
-    container_name: readarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-    volumes:
-      - ./readarr-config:/config
-      - ./books:/books
-      - ./downloads:/downloads
-    ports:
-      - "8787:8787"
-    restart: unless-stopped
-    depends_on:
-      - qbittorrent
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8787"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+# Readarr temporarily disabled due to architecture compatibility issues
+  # Uncomment when amd64-compatible image is available
+  # readarr:
+  #   image: lscr.io/linuxserver/readarr:develop
+  #   container_name: readarr
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/Los_Angeles
+  #   volumes:
+  #     - ./readarr-config:/config
+  #     - ./books:/books
+  #     - ./downloads:/downloads
+  #   ports:
+  #     - "8787:8787"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - qbittorrent
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8787"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
