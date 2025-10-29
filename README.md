@@ -25,15 +25,14 @@ docker-compose up -d
 
 Access Calibre-Web at: `http://localhost:8083`
 
-**Default credentials:**
-- Username: `admin`
-- Password: `admin123`
-
-**Important:** Change the default password immediately after first login!
+**First Login:**
+- Use the default credentials provided by the LinuxServer.io image
+- See `.credentials` file (not in repo) for your configured username and password
+- **Important:** Change the default credentials immediately after first login!
 
 ### Initial Configuration
 
-1. **First Login**: Login with default credentials
+1. **First Login**: Login with your credentials
 2. **Database Location**: Point to `/books` directory
 3. **Enable Kobo Sync**:
    - Go to Admin → Edit Basic Configuration

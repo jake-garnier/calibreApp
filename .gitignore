@@ -2,6 +2,9 @@
 config/
 books/
 
+# Credentials
+.credentials
+
 # Docker
 *.log
 
