@@ -1,4 +1,4 @@
-# Calibre-Web + Readarr + qBittorrent Stack
+# Calibre-Web + LazyLibrarian + qBittorrent Stack
 
 Complete self-hosted ebook automation and management system for Kobo e-readers.
 
@@ -11,11 +11,13 @@ Complete self-hosted ebook automation and management system for Kobo e-readers.
 - **Ebook conversion**: Convert between formats (with calibre mod)
 - **User management**: Multiple users with custom reading lists
 
-### Readarr
-- **Automated book acquisition**: Monitor authors and auto-download releases
-- **Metadata management**: Integrates with GoodReads and Google Books
-- **Quality profiles**: Choose preferred formats (EPUB, MOBI, etc.)
-- **Calendar view**: Track upcoming book releases
+### LazyLibrarian
+- **Automated book acquisition**: Monitor authors and auto-download new releases
+- **Multiple search providers**: Supports GoodReads, GoogleBooks, and various torrent/NZB indexers
+- **Quality preferences**: Choose preferred formats (EPUB, MOBI, PDF, etc.)
+- **Author management**: Track authors and get notified of new books
+- **Magazine support**: Download magazines automatically
+- **Direct Calibre integration**: Automatically import to Calibre database
 
 ### qBittorrent
 - **Torrent client**: Download books from legal sources
@@ -27,7 +29,7 @@ Complete self-hosted ebook automation and management system for Kobo e-readers.
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Ports 8083, 8080, 8787, and 6881 available
+- Ports 8083, 8080, 5299, and 6881 available
 
 ### Quick Start
 
@@ -38,7 +40,7 @@ docker-compose up -d
 Access the services:
 - **Calibre-Web**: `http://localhost:8083`
 - **qBittorrent**: `http://localhost:8080`
-- **Readarr**: `http://localhost:8787`
+- **LazyLibrarian**: `http://localhost:5299`
 
 **First Login:**
 - Use the default credentials provided by the LinuxServer.io image
@@ -83,49 +85,66 @@ http://<your-server-ip>:8083/kobo/<your-token>
    - Default Save Path: `/downloads`
    - Keep incomplete in: `/downloads/incomplete`
 
-### Readarr Setup
+### LazyLibrarian Setup
 
-1. **First Login**: `http://<your-server-ip>:8787`
+1. **First Login**: `http://<your-server-ip>:5299`
    - No default credentials required
-2. **Add Download Client** (qBittorrent):
-   - Settings → Download Clients → Add → qBittorrent
-   - Host: `qbittorrent`
-   - Port: `8080`
-   - Username/Password: From qBittorrent setup
-3. **Add Root Folder**:
-   - Settings → Media Management → Root Folders
-   - Add: `/books`
-4. **Configure Calibre Integration**:
-   - Settings → Import Lists → Add → Calibre
-   - Host: `calibre-web`
-   - Port: `8083`
-   - Library Path: `/books`
-5. **Add Indexers** (for legal sources):
-   - Settings → Indexers → Add Indexer
-   - Configure torrent trackers for legal/public domain books
+
+2. **Initial Configuration**:
+   - Go to **Config** (gear icon)
+   - **Processing** tab:
+     - eBook Folder: `/books`
+     - Download Folder: `/downloads`
+     - Check "Use eBook Folder for New Books"
+
+3. **Add Download Client** (qBittorrent):
+   - **Downloaders** tab:
+     - Enable "qBittorrent"
+     - Host: `qbittorrent` (container name)
+     - Port: `8080`
+     - Username/Password: From qBittorrent setup
+
+4. **Configure Search Providers**:
+   - **Providers** tab:
+     - Enable search providers for legal/public domain books
+     - Examples: Project Gutenberg, Standard Ebooks, Archive.org
+     - Add torrent indexers that carry legal content
+
+5. **Enable Calibre Integration** (Optional):
+   - **Processing** tab:
+     - Enable "Use Calibre"
+     - Calibre Library Path: `/books`
+     - This automatically imports books to Calibre database
+
+6. **Configure Metadata Sources**:
+   - **API Keys** tab:
+     - Add GoodReads API key (optional, for better metadata)
+     - Add GoogleBooks API key (optional)
 
 ### Automation Workflow
 
 Once configured, the stack works automatically:
 
-1. **Add Authors** in Readarr that you want to monitor
-2. **Readarr monitors** for new releases from those authors
-3. **New book detected** → Readarr sends to qBittorrent
-4. **qBittorrent downloads** the book to `/downloads`
-5. **Readarr imports** completed download to `/books`
-6. **Calibre-Web** automatically shows the new book
-7. **Kobo sync** picks up the new book on next sync
+1. **Add Authors** in LazyLibrarian that you want to monitor
+2. **LazyLibrarian searches** for books from those authors
+3. **Click "Add to Wanted"** for books you want to download
+4. **LazyLibrarian** automatically searches indexers and sends torrent to qBittorrent
+5. **qBittorrent downloads** the book to `/downloads`
+6. **LazyLibrarian moves** completed download to `/books`
+7. **LazyLibrarian imports** to Calibre database (if enabled)
+8. **Calibre-Web** automatically shows the new book
+9. **Kobo sync** picks up the new book on next sync
 
 ## Directory Structure
 
 ```
 calibreApp/
-├── config/                  # Calibre-Web configuration
-├── qbittorrent-config/      # qBittorrent configuration
-├── readarr-config/          # Readarr configuration
-├── books/                   # Your ebook library (shared across all services)
-├── downloads/               # Download location for qBittorrent
-├── docker-compose.yml       # All three services
+├── config/                     # Calibre-Web configuration
+├── qbittorrent-config/         # qBittorrent configuration
+├── lazylibrarian-config/       # LazyLibrarian configuration
+├── books/                      # Your ebook library (shared across all services)
+├── downloads/                  # Download location for qBittorrent
+├── docker-compose.yml          # All three services
 └── .github/workflows/deploy.yml
 ```
 

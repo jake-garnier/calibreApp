@@ -2,7 +2,7 @@
 config/
 books/
 qbittorrent-config/
-readarr-config/
+lazylibrarian-config/
 downloads/
 
 # Credentials
